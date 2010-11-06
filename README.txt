@@ -11,6 +11,6 @@ Functions:
 
 Configuration:
 
-config plugins.Kohanadocs.apilink http://example.com/guide/api
+config plugins.Kohanadocs.apilink http://example.com/guide/api/
 
 Trailing slash is required!
