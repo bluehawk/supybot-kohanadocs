@@ -1,13 +1,16 @@
 Usage:
 
-api Request
+Classes:
+ api Request
 
-api Request $is_ajax
+Properties: 
+ api Request $is_ajax
 
-api Kohana init
+Functions:
+ api Kohana init
 
 Configuration:
 
-config plugins.Kohanadocs.apilink http://pathtosite/guide/
+config plugins.Kohanadocs.apilink http://example.com/guide/api
 
 Trailing slash is required!
