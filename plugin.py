@@ -34,26 +34,71 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.conf as conf
+import supybot.registry
 import re
 
 class Kohanadocs(callbacks.Plugin):
-    """Add the help for "@plugin help Kohanadocs" here
-    This should describe *how* to use this plugin."""
+	"""Add the help for "@plugin help Kohanadocs" here
+	This should describe *how* to use this plugin."""
+	
+	def api(self, irc, msg, args, nick, clas, func):
+		"""<class> [<function>] [<nick>]
 
-    def api(self, irc, msg, args, cl, fu):
-        """<class> [<function>]
+		Link to API documentation for <class> (<function>), optionally telling it to <nick>"""
+		
+		# Set the reply to if its set
+		if nick != None:
+			# Don't allow people to tell to kohana-bot, he gets mad
+			if re.match("kohana-bot",nick,flags=re.IGNORECASE):
+				irc.reply("He doesn't care.")
+				return
+			msg.nick = nick
+		
+		# Build the link
+		out = clas
+		if type(func) == str:
+			match = re.match("\$",func)
+			if match is not None:
+				out = out + "#property:" + func
+			else:
+				out = out + "#" + func
+		msg = conf.get(conf.supybot.plugins.Kohanadocs.apilink) + out
+		
+		# And send it
+		irc.reply(msg)
+	api = wrap(api, [reverse(optional('nickInChannel')), 'somethingWithoutSpaces', optional('somethingWithoutSpaces')])
 
-        Return the Userguide API link for <class> (<function>)"""
-        out = cl
-        if type(fu) == str:
-            match = re.match("\$",fu)
-            if match is not None:
-                out = out + "#property:" + fu
-            else:
-                out = out + "#" + fu
-        irc.reply(conf.get(conf.supybot.plugins.Kohanadocs.apilink) + out)
-    api = wrap(api, ['somethingWithoutSpaces' , optional('somethingWithoutSpaces')])
-
+	def docs(self, irc, msg, args, nick, page):
+		"""<page> [<nick>]
+		
+		Link to the documentation for that <page>, optionally telling it to <nick>. If I don't recognize the page, I will try to guess"""
+		
+		# Set the reply to if its set
+		if nick != None:
+			# Don't allow people to tell to kohana-bot, he gets mad
+			if re.match("kohana-bot",nick,flags=re.IGNORECASE):
+				irc.reply("He doesn't care.")
+				return
+			msg.nick = nick
+		
+		# If no page specified, just return a link to the docs
+		if page == None:
+			msg = conf.get(conf.supybot.plugins.Kohanadocs.doclink)
+			irc.reply(msg)
+			return
+		
+		msg = conf.get(conf.supybot.plugins.Kohanadocs.doclink) + page
+		irc.reply(msg)
+	docs = wrap(docs, [reverse(optional('nickInChannel')), optional('somethingWithoutSpaces')])
+	
+#	def add(self, irc, msg, args, page, path):
+#		"""<page> <path>
+#		
+#		Adds a link to the documentation with page, <path> must be relative to doclink, and must not have a trailing slash"""
+#		pages = conf.supybot.plugins.Kohanadocs.pages
+#		pages.register(page,registry.String(path,"""This is a page"""))
+#		irc.replySuccess()
+#	add = wrap(add, ['somethingWithoutSpaces','somethingWithoutSpaces',("checkCapability", "docs")])
 
 
 Class = Kohanadocs

@@ -48,4 +48,10 @@ Kohanadocs = conf.registerPlugin('Kohanadocs')
 conf.registerGlobalValue(Kohanadocs, 'apilink',
         registry.String('http://michaeldpeters.com/userguide/guide/api/', """URL for api links"""))
 
+conf.registerGlobalValue(Kohanadocs, 'doclink',
+        registry.String('http://michaeldpeters.com/userguide/guide/', """URL for doc links"""))
+
+conf.registerGlobalValue(Kohanadocs, 'pages',
+        registry.String('', """Pages are stored in here"""))
+
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
